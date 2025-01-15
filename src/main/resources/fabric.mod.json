@@ -3,10 +3,11 @@
   "id": "randomthings",
   "version": "${version}",
   "name": "Random Things",
-  "description": "Random things! This contains 2 timers, and 3 custom camera keybinds",
+  "description": "Random things! Contains in-game timers and custom keybinds",
   "authors": [
     "koji-aito",
-    "Tetro48"
+    "Tetro48",
+    "Juloos"
   ],
   "contact": {
     "homepage": "https://github.com/BTW-Community/Random-Things-Addon",
