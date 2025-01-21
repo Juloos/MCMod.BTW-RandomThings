@@ -7,6 +7,7 @@
         "GameSettingsMixin"
     ],
     "client": [
+        "GuiControlsMixin",
         "GuiInGameMixin",
         "MinecraftMixin"
     ],

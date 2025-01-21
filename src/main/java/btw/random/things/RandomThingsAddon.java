@@ -15,12 +15,12 @@ import net.minecraft.src.StatCollector;
 public class RandomThingsAddon extends BTWAddon {
     private static RandomThingsAddon instance;
 
-    public static KeyBinding[] slot_keys;
-
     public static KeyBinding f5_key;
     public static KeyBinding third_person_key;
     public static KeyBinding first_person_key;
     public static KeyBinding backwards_facing_key;
+
+    public static KeyBinding[] slot_keys;
 
     public static Boolean shouldShowDateTimer;
     public static Boolean shouldShowRealTimer;
@@ -70,22 +70,22 @@ public class RandomThingsAddon extends BTWAddon {
     }
 
     public void initKeybind(GameSettings settings) {
-        slot_keys = new KeyBinding[9];
-        for (int i = 0; i < 9; i++)
-            slot_keys[i] = new KeyBinding("key.randomthings.slot" + (i + 1), Keyboard.KEY_1 + i);
-
         f5_key = new KeyBinding("key.randomthings.perspective", Keyboard.KEY_F5);
         third_person_key = new KeyBinding("key.randomthings.thirdperson", Keyboard.KEY_X);
         first_person_key = new KeyBinding("key.randomthings.firstperson", Keyboard.KEY_Z);
         backwards_facing_key = new KeyBinding("key.randomthings.backwardsfacing", Keyboard.KEY_C);
 
+        slot_keys = new KeyBinding[9];
+        for (int i = 0; i < 9; i++)
+            slot_keys[i] = new KeyBinding("key.randomthings.slot" + (i + 1), Keyboard.KEY_1 + i);
+
         KeyBinding[] keyBindings = settings.keyBindings;
         keyBindings = Arrays.copyOf(keyBindings, keyBindings.length + 9 + 4);
-        System.arraycopy(slot_keys, 0, keyBindings, keyBindings.length - 4 - 9, 9);
-        keyBindings[keyBindings.length - 4] = f5_key;
-        keyBindings[keyBindings.length - 3] = first_person_key;
-        keyBindings[keyBindings.length - 2] = third_person_key;
-        keyBindings[keyBindings.length - 1] = backwards_facing_key;
+        keyBindings[keyBindings.length - 9 - 4] = f5_key;
+        keyBindings[keyBindings.length - 9 - 3] = first_person_key;
+        keyBindings[keyBindings.length - 9 - 2] = third_person_key;
+        keyBindings[keyBindings.length - 9 - 1] = backwards_facing_key;
+        System.arraycopy(slot_keys, 0, keyBindings, keyBindings.length - 9, 9);
         settings.keyBindings = keyBindings;
     }
 }
