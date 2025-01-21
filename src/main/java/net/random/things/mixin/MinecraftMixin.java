@@ -21,11 +21,6 @@ public class MinecraftMixin {
     @Shadow
     public EntityClientPlayerMP thePlayer;
 
-    @Inject(method = "startGame", at = @At("RETURN"))
-    private void startGame(CallbackInfo ci) {
-        RandomThingsAddon.getInstance().initKeybind();
-    }
-
     @Redirect(method = "runTick", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;getEventKey()I", ordinal = 13))
     private int redirectF5Call() {
         if (RandomThingsAddon.first_person_key.isPressed())

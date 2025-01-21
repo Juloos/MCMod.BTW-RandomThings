@@ -69,7 +69,7 @@ public class RandomThingsAddon extends BTWAddon {
         AddonHandler.logMessage(this.getName() + " Version " + this.getVersionString() + " Initializing...");
     }
 
-    public void initKeybind() {
+    public void initKeybind(GameSettings settings) {
         slot_keys = new KeyBinding[9];
         for (int i = 0; i < 9; i++)
             slot_keys[i] = new KeyBinding("key.randomthings.slot" + (i + 1), Keyboard.KEY_1 + i);
@@ -79,7 +79,6 @@ public class RandomThingsAddon extends BTWAddon {
         first_person_key = new KeyBinding("key.randomthings.firstperson", Keyboard.KEY_Z);
         backwards_facing_key = new KeyBinding("key.randomthings.backwardsfacing", Keyboard.KEY_C);
 
-        GameSettings settings = Minecraft.getMinecraft().gameSettings;
         KeyBinding[] keyBindings = settings.keyBindings;
         keyBindings = Arrays.copyOf(keyBindings, keyBindings.length + 9 + 4);
         System.arraycopy(slot_keys, 0, keyBindings, keyBindings.length - 4 - 9, 9);
