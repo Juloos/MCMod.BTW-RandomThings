@@ -9,8 +9,6 @@ import btw.AddonHandler;
 import btw.BTWAddon;
 import net.minecraft.src.GameSettings;
 import net.minecraft.src.KeyBinding;
-import net.minecraft.src.Minecraft;
-import net.minecraft.src.StatCollector;
 
 public class RandomThingsAddon extends BTWAddon {
     private static RandomThingsAddon instance;
@@ -25,6 +23,7 @@ public class RandomThingsAddon extends BTWAddon {
     public static Boolean shouldShowDateTimer;
     public static Boolean shouldShowRealTimer;
     public static String timerAlignment;
+    public static Boolean toggleSprint;
 
     public RandomThingsAddon() {
         super();
@@ -40,10 +39,8 @@ public class RandomThingsAddon extends BTWAddon {
     public void preInitialize() {
         this.registerProperty("EnableMinecraftDateTimer", "True", "Set if the minecraft date should show up or not");
         this.registerProperty("EnableRealWorldTimer", "True", "Set if the real time timer should show up or not");
-        this.registerProperty("TimerAlignment", "Hotbar", """
-            Places timers on some spots.
-            # Allowed case-insensitive strings: "Hotbar", "TopLeft", "Top", "TopRight", "BottomLeft", "BottomRight"
-        """);
+        this.registerProperty("TimerAlignment", "Hotbar", "Places timers on some spots.\n# Allowed case-insensitive strings: \"Hotbar\", \"TopLeft\", \"Top\", \"TopRight\", \"BottomLeft\", \"BottomRight\"");
+        this.registerProperty("ToggleSprint", "True", "Set whether the sprint/special key should have a toggle or hold behavior");
     }
 
     @Override
@@ -62,6 +59,7 @@ public class RandomThingsAddon extends BTWAddon {
             default:
                 timerAlignment = "hotbar";
         }
+        toggleSprint = Boolean.parseBoolean(propertyValues.get("ToggleSprint"));
     }
 
     @Override

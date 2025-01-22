@@ -14,7 +14,7 @@ import net.minecraft.src.Minecraft;
 import net.minecraft.src.GameSettings;
 
 @Mixin(Minecraft.class)
-public class MinecraftMixin {
+public abstract class MinecraftMixin {
     @Shadow
     public GameSettings gameSettings;
 

@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameSettings.class)
-public class GameSettingsMixin {
+public abstract class GameSettingsMixin {
     @Inject(
             method = "<init>(Lnet/minecraft/src/Minecraft;Ljava/io/File;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/src/GameSettings;loadOptions()V")

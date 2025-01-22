@@ -21,7 +21,7 @@ import net.minecraft.src.ScaledResolution;
 import net.minecraft.src.WorldClient;
 
 @Mixin(GuiIngame.class)
-public class GuiInGameMixin {
+public abstract class GuiInGameMixin {
     @Final
     @Shadow
     private Minecraft mc;
@@ -29,7 +29,10 @@ public class GuiInGameMixin {
     @Shadow
     @Final
     private Random rand;
+
+    @Unique
     private int amountRendered = 0;
+    @Unique
     private int layers = 1;
 
     @Unique
@@ -63,6 +66,7 @@ public class GuiInGameMixin {
         }
     }
 
+    @Unique
     String getTimeType(WorldClient world) {
         if (this.mc.thePlayer.dimension != 0) {
             long worldTime = world.getWorldTime();
@@ -77,6 +81,7 @@ public class GuiInGameMixin {
         }
     }
 
+    @Unique
     private void renderText(String text, int stringWidth, int iScreenX, int iScreenY, FontRenderer fontRenderer, ArrayList<StatusEffect> activeStatuses) {
         ScaledResolution scaledResolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
         boolean isDebugEnabled = this.mc.gameSettings.showDebugInfo;
@@ -119,6 +124,7 @@ public class GuiInGameMixin {
     }
 
     //https://stackoverflow.com/questions/6118922/convert-seconds-value-to-hours-minutes-seconds#:~:text=hours%20%3D%20totalSecs%20%2F%203600%3B%20minutes,%2C%20hours%2C%20minutes%2C%20seconds)%3B
+    @Unique
     String secToTime(int sec) {
         int seconds = sec % 60;
         int minutes = sec / 60;
