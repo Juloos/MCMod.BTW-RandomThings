@@ -8,16 +8,19 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(GuiControls.class)
 public abstract class GuiControlsMixin extends GuiScreen {
-    @Shadow protected abstract int getLeftBorder();
+    @Shadow
+    private GameSettings options;
 
-    @Shadow private GameSettings options;
+    @Shadow
+    protected String screenTitle;
 
-    @Shadow protected String screenTitle;
+    @Shadow
+    private int buttonId;
 
-    @Shadow private int buttonId;
-
-    @Unique final private int buttonXMargin = 6;
-    @Unique final private int buttonYMargin = 2;
+    @Unique
+    final private int buttonXMargin = 6;
+    @Unique
+    final private int buttonYMargin = 2;
 
     /**
      * @author Juloos
@@ -35,7 +38,8 @@ public abstract class GuiControlsMixin extends GuiScreen {
         for (int i = 0, j = 0; j < this.options.keyBindings.length; i++) {
             if (j == this.options.keyBindings.length - 9 && i % verticalButtons + 9 >= verticalButtons)
                 continue;  // Force the slots to be aligned
-            this.buttonList.add(new GuiSmallButton(j, xCenter + (i / verticalButtons - 1) * rowSpan - buttonWidth, yMargin + (buttonHeight + buttonYMargin) * (i % verticalButtons), buttonWidth, buttonHeight, this.options.getOptionDisplayString(j))); j++;
+            this.buttonList.add(new GuiSmallButton(j, xCenter + (i / verticalButtons - 1) * rowSpan - buttonWidth, yMargin + (buttonHeight + buttonYMargin) * (i % verticalButtons), buttonWidth, buttonHeight, this.options.getOptionDisplayString(j)));
+            j++;
         }
         this.buttonList.add(new GuiButton(200, xCenter - 100, (3 * yMargin / 2) + (buttonHeight + buttonYMargin) * verticalButtons, I18n.getString("gui.done")));
         this.screenTitle = I18n.getString("controls.title");
