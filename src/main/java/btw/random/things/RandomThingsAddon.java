@@ -13,6 +13,8 @@ import net.minecraft.src.KeyBinding;
 public class RandomThingsAddon extends BTWAddon {
     private static RandomThingsAddon instance;
 
+    public static KeyBinding zoom_key;
+
     public static KeyBinding f5_key;
     public static KeyBinding third_person_key;
     public static KeyBinding first_person_key;
@@ -26,6 +28,7 @@ public class RandomThingsAddon extends BTWAddon {
     public static Boolean toggleSprint;
     public static int lanPort;
     public static Boolean autoHealthScoreboard;
+    public static float zoomFov;
 
     public RandomThingsAddon() {
         super();
@@ -45,6 +48,7 @@ public class RandomThingsAddon extends BTWAddon {
         this.registerProperty("ToggleSprint", "True", "Set whether the sprint/special key should have a toggle or hold behavior");
         this.registerProperty("LanPort", "25565", "Port to always use when opening to LAN (-1 for random)");
         this.registerProperty("AutoHealthScoreboard", "True", "Set whether a health scoreboard should be automatically created when sharing to LAN or not");
+        this.registerProperty("ZoomFov", "-1.5", "Set the FOV value that is set when zooming in");
     }
 
     @Override
@@ -66,6 +70,7 @@ public class RandomThingsAddon extends BTWAddon {
         toggleSprint = Boolean.parseBoolean(propertyValues.get("ToggleSprint"));
         lanPort = Integer.parseInt(propertyValues.get("LanPort"));
         autoHealthScoreboard = Boolean.parseBoolean(propertyValues.get("AutoHealthScoreboard"));
+        zoomFov = Float.parseFloat(propertyValues.get("ZoomFov"));
     }
 
     @Override
@@ -74,6 +79,8 @@ public class RandomThingsAddon extends BTWAddon {
     }
 
     public void initKeybind(GameSettings settings) {
+        zoom_key = new KeyBinding("key.randomthings.zoom", Keyboard.KEY_F);
+
         f5_key = new KeyBinding("key.randomthings.perspective", Keyboard.KEY_F5);
         third_person_key = new KeyBinding("key.randomthings.thirdperson", Keyboard.KEY_X);
         first_person_key = new KeyBinding("key.randomthings.firstperson", Keyboard.KEY_Z);
@@ -84,7 +91,8 @@ public class RandomThingsAddon extends BTWAddon {
             slot_keys[i] = new KeyBinding("key.randomthings.slot" + (i + 1), Keyboard.KEY_1 + i);
 
         KeyBinding[] keyBindings = settings.keyBindings;
-        keyBindings = Arrays.copyOf(keyBindings, keyBindings.length + 9 + 4);
+        keyBindings = Arrays.copyOf(keyBindings, keyBindings.length + 9 + 5);
+        keyBindings[keyBindings.length - 9 - 5] = zoom_key;
         keyBindings[keyBindings.length - 9 - 4] = f5_key;
         keyBindings[keyBindings.length - 9 - 3] = first_person_key;
         keyBindings[keyBindings.length - 9 - 2] = third_person_key;

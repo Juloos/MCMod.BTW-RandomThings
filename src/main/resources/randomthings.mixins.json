@@ -4,6 +4,7 @@
     "package": "net.random.things.mixin",
     "compatibilityLevel": "JAVA_17",
     "mixins": [
+        "EntityRendererMixin",
         "GameSettingsMixin",
         "IntegratedServerListenThreadMixin",
         "IntegratedServerMixin"
