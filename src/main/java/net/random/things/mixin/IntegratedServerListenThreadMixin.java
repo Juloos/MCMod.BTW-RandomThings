@@ -1,25 +1,19 @@
 package net.random.things.mixin;
 
 import btw.random.things.RandomThingsAddon;
-import net.minecraft.src.HttpUtil;
 import net.minecraft.src.IntegratedServerListenThread;
-import net.minecraft.src.ServerListenThread;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(IntegratedServerListenThread.class)
 public abstract class IntegratedServerListenThreadMixin {
-    @Redirect(
+    @ModifyArg(
             method = "func_71755_c",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/src/ServerListenThread;start()V")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/src/ServerListenThread;<init>(Lnet/minecraft/src/NetworkListenThread;Ljava/net/InetAddress;I)V"),
+            index = 2
     )
-    private void redirectServerListenThread(ServerListenThread instance) {
-        int port = RandomThingsAddon.lanPort;
-        if (port <= 0)
-            port = HttpUtil.func_76181_a();
-        if (port <= 0)
-            port = 25564;  // Default port in the code, for some reason its not 25565
-        instance.myPort = port;
+    private int redirectServerListenThread(int port) {
+        return RandomThingsAddon.lanPort > 0 ? RandomThingsAddon.lanPort : port;
     }
 }

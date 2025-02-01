@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(IntegratedServer.class)
-public class IntegratedServerMixin {
+public abstract class IntegratedServerMixin {
     @Inject(
             method = "shareToLAN",
             at = @At(value = "RETURN", ordinal = 0)
