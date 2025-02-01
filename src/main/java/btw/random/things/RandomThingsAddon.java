@@ -24,6 +24,7 @@ public class RandomThingsAddon extends BTWAddon {
     public static Boolean shouldShowRealTimer;
     public static String timerAlignment;
     public static Boolean toggleSprint;
+    public static int lanPort;
 
     public RandomThingsAddon() {
         super();
@@ -41,6 +42,7 @@ public class RandomThingsAddon extends BTWAddon {
         this.registerProperty("EnableRealWorldTimer", "True", "Set if the real time timer should show up or not");
         this.registerProperty("TimerAlignment", "Hotbar", "Places timers on some spots.\n# Allowed case-insensitive strings: \"Hotbar\", \"TopLeft\", \"Top\", \"TopRight\", \"BottomLeft\", \"BottomRight\"");
         this.registerProperty("ToggleSprint", "True", "Set whether the sprint/special key should have a toggle or hold behavior");
+        this.registerProperty("LanPort", "25565", "Port to always use when opening to LAN (-1 for random)");
     }
 
     @Override
@@ -60,6 +62,7 @@ public class RandomThingsAddon extends BTWAddon {
                 timerAlignment = "hotbar";
         }
         toggleSprint = Boolean.parseBoolean(propertyValues.get("ToggleSprint"));
+        lanPort = Integer.parseInt(propertyValues.get("LanPort"));
     }
 
     @Override
