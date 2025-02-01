@@ -8,6 +8,7 @@
     ],
     "client": [
         "EntityPlayerSPMixin",
+        "GuiContainerMixin",
         "GuiControlsMixin",
         "GuiInGameMixin",
         "MinecraftMixin"
