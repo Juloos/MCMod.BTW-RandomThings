@@ -1,5 +1,6 @@
 package net.random.things.mixin;
 
+import btw.random.things.RandomThingsAddon;
 import net.minecraft.src.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,6 +14,8 @@ public class IntegratedServerMixin {
             at = @At(value = "RETURN", ordinal = 0)
     )
     private void shareToLAN(EnumGameType par1EnumGameType, boolean par2, CallbackInfoReturnable<String> cir) {
+        if (!RandomThingsAddon.autoHealthScoreboard)
+            return;
         Scoreboard scoreboard = ((IntegratedServer) (Object) this).getEntityWorld().getScoreboard();
         ScoreObjective health;
         try {

@@ -25,6 +25,7 @@ public class RandomThingsAddon extends BTWAddon {
     public static String timerAlignment;
     public static Boolean toggleSprint;
     public static int lanPort;
+    public static Boolean autoHealthScoreboard;
 
     public RandomThingsAddon() {
         super();
@@ -43,6 +44,7 @@ public class RandomThingsAddon extends BTWAddon {
         this.registerProperty("TimerAlignment", "Hotbar", "Places timers on some spots.\n# Allowed case-insensitive strings: \"Hotbar\", \"TopLeft\", \"Top\", \"TopRight\", \"BottomLeft\", \"BottomRight\"");
         this.registerProperty("ToggleSprint", "True", "Set whether the sprint/special key should have a toggle or hold behavior");
         this.registerProperty("LanPort", "25565", "Port to always use when opening to LAN (-1 for random)");
+        this.registerProperty("AutoHealthScoreboard", "True", "Set whether a health scoreboard should be automatically created when sharing to LAN or not");
     }
 
     @Override
@@ -63,6 +65,7 @@ public class RandomThingsAddon extends BTWAddon {
         }
         toggleSprint = Boolean.parseBoolean(propertyValues.get("ToggleSprint"));
         lanPort = Integer.parseInt(propertyValues.get("LanPort"));
+        autoHealthScoreboard = Boolean.parseBoolean(propertyValues.get("AutoHealthScoreboard"));
     }
 
     @Override
