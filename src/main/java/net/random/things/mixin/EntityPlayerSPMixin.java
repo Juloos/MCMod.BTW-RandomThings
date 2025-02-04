@@ -17,25 +17,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class EntityPlayerSPMixin extends AbstractClientPlayer {
     @Shadow public MovementInput movementInput;
 
-    @Unique private boolean wasHoldingSpecial;
+    @Shadow public abstract boolean isUsingSpecialKey();
 
     public EntityPlayerSPMixin(World par1World, String par2Str) {
         super(par1World, par2Str);
-    }
-
-    @Inject(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/EntityPlayerSP;isUsingSpecialKey()Z", ordinal = 0))
-    private void storeSpecialKeyState(CallbackInfo ci) {
-        this.wasHoldingSpecial = this.isUsingSpecialKey();
     }
 
     @Redirect(method = "onLivingUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/EntityPlayerSP;isSprinting()Z", ordinal = 2))
     private boolean redirectSprinting(EntityPlayerSP instance) {
         if (!RandomThingsAddon.toggleSprint) {
             boolean allowedToSprint = !this.doesStatusPreventSprinting() || this.capabilities.allowFlying;
-            if (this.movementInput.moveForward < 0.8f || !allowedToSprint || (!this.isUsingSpecialKey() && this.wasHoldingSpecial))
-                this.setSprinting(false);
+            this.setSprinting(this.isUsingSpecialKey() && allowedToSprint && this.movementInput.moveForward >= 0.8f);
             return false;
         }
-        return true;
+        return isSprinting();
     }
 }
