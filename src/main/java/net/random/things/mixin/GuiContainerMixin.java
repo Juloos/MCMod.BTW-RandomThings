@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(GuiContainer.class)
@@ -15,6 +16,8 @@ public abstract class GuiContainerMixin extends GuiScreen {
     @Shadow protected abstract void handleMouseClick(Slot par1Slot, int par2, int par3, int par4);
 
     @Shadow private Slot theSlot;
+
+    @Shadow protected abstract boolean checkHotbarKeys(int par1);
 
     @Inject(
             method = "checkHotbarKeys",
@@ -31,5 +34,13 @@ public abstract class GuiContainerMixin extends GuiScreen {
             }
         }
         cir.setReturnValue(false);
+    }
+
+    @Inject(
+            method = "mouseClicked",
+            at = @At("TAIL")
+    )
+    private void mouseClicked(int mouseX, int mouseY, int mouseButton, CallbackInfo ci) {
+        this.checkHotbarKeys(mouseButton - 100);
     }
 }
