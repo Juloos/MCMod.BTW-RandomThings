@@ -1,6 +1,9 @@
 package net.random.things.mixin;
 
 import net.minecraft.src.EntityClientPlayerMP;
+import net.minecraft.src.KeyBinding;
+import net.random.things.event.GlobalMouseListener;
+import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -62,6 +65,30 @@ public abstract class MinecraftMixin {
             this.gameSettings.fovSetting = oldFovSetting;
             this.gameSettings.smoothCamera = false;
             wasZooming = false;
+        }
+    }
+
+    @Redirect(
+            method = "runTick",
+            at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I")
+    )
+    private int removeMouseButtonShift() {
+        if (Mouse.getEventButton() > 2 && GlobalMouseListener.getInstance() != null)
+            return -4269;
+        return Mouse.getEventButton();
+    }
+
+    @Inject(
+            method = "runTick",
+            at = @At(value = "FIELD", target = "Lnet/minecraft/src/Minecraft;leftClickCounter:I", ordinal = 1)
+    )
+    private void fixMouseButtonShift(CallbackInfo ci) {
+        boolean pressed;
+        for (int i = 3; i < Mouse.getButtonCount(); i++) {
+            pressed = GlobalMouseListener.isButtonDown(i);
+            KeyBinding.setKeyBindState(i - 100, pressed);
+            if (pressed)
+                KeyBinding.onTick(i - 100);
         }
     }
 }
