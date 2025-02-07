@@ -21,19 +21,15 @@ public class GlobalMouseListener implements NativeMouseInputListener {
     public void nativeMousePressed(NativeMouseEvent e) {
         if (Minecraft.getMinecraft() == null || !Minecraft.getMinecraft().inGameHasFocus)
             return;
-        if (0 < e.getButton() && e.getButton() <= buttonsStates.length) {
+        if (0 < e.getButton() && e.getButton() <= buttonsStates.length)
             buttonsStates[e.getButton() - 1] = true;
-//            System.out.println("Button " + (e.getButton() - 1) + " pressed");
-        }
     }
 
     public void nativeMouseReleased(NativeMouseEvent e) {
         if (Minecraft.getMinecraft() == null || !Minecraft.getMinecraft().inGameHasFocus)
             return;
-        if (0 < e.getButton() && e.getButton() <= buttonsStates.length) {
+        if (0 < e.getButton() && e.getButton() <= buttonsStates.length)
             buttonsStates[e.getButton() - 1] = false;
-//            System.out.println("Button " + (e.getButton() - 1) + " released");
-        }
     }
 
     public void nativeMouseMoved(NativeMouseEvent e) {
@@ -51,9 +47,8 @@ public class GlobalMouseListener implements NativeMouseInputListener {
     private static GlobalMouseListener instance;
 
     public static GlobalMouseListener getInstance() {
-        if (instance == null) {
+        if (instance == null)
             setup(new GlobalMouseListener(Mouse.getButtonCount()));
-        }
         return instance;
     }
 
