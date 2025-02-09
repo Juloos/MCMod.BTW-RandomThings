@@ -30,6 +30,8 @@ public class RandomThingsAddon extends BTWAddon {
     public static Boolean autoHealthScoreboard;
     public static float zoomFov;
 
+    public static Boolean useJNativeHook = true;
+
     public RandomThingsAddon() {
         super();
     }
@@ -49,6 +51,7 @@ public class RandomThingsAddon extends BTWAddon {
         this.registerProperty("LanPort", "25565", "Port to always use when opening to LAN (-1 for random)");
         this.registerProperty("AutoHealthScoreboard", "True", "Set whether a health scoreboard should be automatically created when sharing to LAN or not");
         this.registerProperty("ZoomFov", "-1.5", "Set the FOV value that is set when zooming in");
+        this.registerProperty("UseJNativeHook", "True", "Set whether to use JNativeHook library or not (disable if mouse sensibility has acceleration issues)");
     }
 
     @Override
@@ -71,6 +74,7 @@ public class RandomThingsAddon extends BTWAddon {
         lanPort = Integer.parseInt(propertyValues.get("LanPort"));
         autoHealthScoreboard = Boolean.parseBoolean(propertyValues.get("AutoHealthScoreboard"));
         zoomFov = Float.parseFloat(propertyValues.get("ZoomFov"));
+        useJNativeHook = Boolean.parseBoolean(propertyValues.get("UseJNativeHook"));
     }
 
     @Override

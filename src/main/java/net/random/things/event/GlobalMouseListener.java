@@ -1,11 +1,15 @@
 package net.random.things.event;
 
+import btw.random.things.RandomThingsAddon;
 import com.github.kwhat.jnativehook.GlobalScreen;
 import com.github.kwhat.jnativehook.NativeHookException;
 import com.github.kwhat.jnativehook.mouse.NativeMouseEvent;
 import com.github.kwhat.jnativehook.mouse.NativeMouseInputListener;
 import net.minecraft.src.Minecraft;
 import org.lwjgl.input.Mouse;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GlobalMouseListener implements NativeMouseInputListener {
     private final boolean[] buttonsStates;
@@ -14,10 +18,7 @@ public class GlobalMouseListener implements NativeMouseInputListener {
         this.buttonsStates = new boolean[buttonsCount];
     }
 
-    public void nativeMouseClicked(NativeMouseEvent e) {
-        // ignored
-    }
-
+    @Override
     public void nativeMousePressed(NativeMouseEvent e) {
         if (Minecraft.getMinecraft() == null || !Minecraft.getMinecraft().inGameHasFocus)
             return;
@@ -25,19 +26,12 @@ public class GlobalMouseListener implements NativeMouseInputListener {
             buttonsStates[e.getButton() - 1] = true;
     }
 
+    @Override
     public void nativeMouseReleased(NativeMouseEvent e) {
         if (Minecraft.getMinecraft() == null || !Minecraft.getMinecraft().inGameHasFocus)
             return;
         if (0 < e.getButton() && e.getButton() <= buttonsStates.length)
             buttonsStates[e.getButton() - 1] = false;
-    }
-
-    public void nativeMouseMoved(NativeMouseEvent e) {
-        // ignored
-    }
-
-    public void nativeMouseDragged(NativeMouseEvent e) {
-        // ignored
     }
 
     public static boolean isButtonDown(int button) {
@@ -53,6 +47,9 @@ public class GlobalMouseListener implements NativeMouseInputListener {
     }
 
     private static void setup(GlobalMouseListener listener) {
+        if (!RandomThingsAddon.useJNativeHook)
+            return;
+
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException e) {
@@ -60,8 +57,11 @@ public class GlobalMouseListener implements NativeMouseInputListener {
             return;
         }
 
+        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        logger.setLevel(Level.OFF);
+        logger.setUseParentHandlers(false);
+
         instance = listener;
         GlobalScreen.addNativeMouseListener(listener);
-        GlobalScreen.addNativeMouseMotionListener(listener);
     }
 }

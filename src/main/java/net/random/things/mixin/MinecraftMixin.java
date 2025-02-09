@@ -73,7 +73,7 @@ public abstract class MinecraftMixin {
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I")
     )
     private int removeMouseButtonShift() {
-        if (Mouse.getEventButton() > 2 && GlobalMouseListener.getInstance() != null)
+        if (RandomThingsAddon.useJNativeHook && Mouse.getEventButton() > 2 && GlobalMouseListener.getInstance() != null)
             return -4269;
         return Mouse.getEventButton();
     }
@@ -83,6 +83,8 @@ public abstract class MinecraftMixin {
             at = @At(value = "FIELD", target = "Lnet/minecraft/src/Minecraft;leftClickCounter:I", ordinal = 1)
     )
     private void fixMouseButtonShift(CallbackInfo ci) {
+        if (!RandomThingsAddon.useJNativeHook)
+            return;
         boolean pressed;
         for (int i = 3; i < Mouse.getButtonCount(); i++) {
             pressed = GlobalMouseListener.isButtonDown(i);
