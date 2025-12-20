@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import api.AddonHandler;
+import api.BTWAddon;
+import api.config.AddonConfig;
+
 import org.lwjgl.input.Keyboard;
 
-import btw.AddonHandler;
-import btw.BTWAddon;
 import net.minecraft.src.GameSettings;
 import net.minecraft.src.KeyBinding;
 import net.minecraft.src.Minecraft;
@@ -39,21 +41,25 @@ public class RandomThingsAddon extends BTWAddon {
     }
 
     @Override
-    public void preInitialize() {
-        this.registerProperty("EnableMinecraftDateTimer", "True", "Set if the minecraft date should show up or not");
-        this.registerProperty("EnableRealWorldTimer", "True", "Set if the real time timer should show up or not");
-        this.registerProperty("TimerAlignment", "Hotbar", """
-        Places timers on some spots.
-        # Allowed case-insensitive strings: "Hotbar", "TopLeft", "Top", "TopRight", "BottomLeft", "BottomRight"\s""");
-        this.registerProperty("PrecisionMode", "False", "False: Standard level precision (not suitable for speedrunning)\n# True: Highest level, shows ticks");
-        this.registerProperty("WarnDurabilityWaste", "True", "This warns players with a sound when using more durability");
+    public void registerConfigProperties(AddonConfig config) {
+        config.registerBoolean("enable-minecraft-date-timer", true, "Set if the minecraft date should show up or not");
+        config.updatePath("EnableMinecraftDateTimer", "enable-minecraft-date-timer");
+        config.registerBoolean("enable-real-world-timer", true, "Set if the real time timer should show up or not");
+        config.updatePath("EnableRealWorldTimer", "enable-real-world-timer");
+        config.registerString("timer-alignment", "Hotbar", "Places timers on some spots.", """
+                Allowed case-insensitive strings: "Hotbar", "TopLeft", "Top", "TopRight", "BottomLeft", "BottomRight"\s""");
+        config.updatePath("TimerAlignment", "timer-alignment");
+        config.registerBoolean("precision-mode", false, "False: Standard level precision (not suitable for speedrunning)\n# True: Highest level, shows ticks");
+        addonConfig.updatePath("PrecisionMode", "precision-mode");
+        config.registerBoolean("warn-durability-waste", true, "This warns players with a sound when using more durability");
+        addonConfig.updatePath("WarnDurabilityWaste", "warn-durability-waste");
     }
 
     @Override
-    public void handleConfigProperties(Map<String, String> propertyValues) {
-        shouldShowDateTimer = Boolean.parseBoolean(propertyValues.get("EnableMinecraftDateTimer"));
-        shouldShowRealTimer = Boolean.parseBoolean(propertyValues.get("EnableRealWorldTimer"));
-        timerAlignment = propertyValues.get("TimerAlignment").toLowerCase();
+    public void handleConfigProperties(AddonConfig config) {
+        shouldShowDateTimer = config.getBoolean("enable-minecraft-date-timer");
+        shouldShowRealTimer = config.getBoolean("enable-real-world-timer");
+        timerAlignment = config.getString("timer-alignment").toLowerCase();
         switch (timerAlignment) {
             case "topleft":
             case "topright":
@@ -65,8 +71,8 @@ public class RandomThingsAddon extends BTWAddon {
             default:
                 timerAlignment = "hotbar";
         }
-        precisionMode = Boolean.parseBoolean(propertyValues.get("PrecisionMode"));
-        warnDurabilityWaste = Boolean.parseBoolean(propertyValues.get("WarnDurabilityWaste"));
+        precisionMode = config.getBoolean("precision-mode");
+        warnDurabilityWaste = config.getBoolean("warn-durability-waste");
     }
 
     @Override
