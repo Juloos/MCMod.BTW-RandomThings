@@ -53,7 +53,7 @@ public class RandomThingsAddon extends BTWAddon {
         config.registerBoolean("ToggleSprint", true, "Set whether the sprint/special key should have a toggle or hold behavior");
         config.registerInt("LanPort", 25565, "Port to always use when opening to LAN (-1 for random)");
         config.registerBoolean("AutoHealthScoreboard", true, "Set whether a health scoreboard should be automatically created when sharing to LAN or not");
-        config.registerDouble("ZoomFov", -1.5, "Set the FOV value that is set when zooming in");
+        config.registerString("ZoomFov", "-1.5", "Set the FOV value that is set when zooming in");
         config.registerBoolean("UseJNativeHook", true, "Set whether to use JNativeHook library or not (disable if mouse sensibility has acceleration issues)");
         config.registerBoolean("WarnDurabilityWaste", true, "This warns players with a sound when using more durability");
         config.registerBoolean("PrecisionMode", false, "False: Standard level precision (not suitable for speedrunning)\n# True: Highest level, shows ticks");
@@ -78,7 +78,7 @@ public class RandomThingsAddon extends BTWAddon {
         toggleSprint = config.getBoolean("ToggleSprint");
         lanPort = config.getInt("LanPort");
         autoHealthScoreboard = config.getBoolean("AutoHealthScoreboard");
-        zoomFov = (float) config.getDouble("ZoomFov");
+        zoomFov = Float.parseFloat(config.getString("ZoomFov"));  // Otherwise spawns Invalid config value
         useJNativeHook = config.getBoolean("UseJNativeHook");
         precisionMode = config.getBoolean("PrecisionMode");
         warnDurabilityWaste = config.getBoolean("WarnDurabilityWaste");
