@@ -1,7 +1,6 @@
 package btw.random.things;
 
 import java.util.Arrays;
-import java.util.Map;
 
 import api.AddonHandler;
 import api.BTWAddon;
@@ -47,24 +46,24 @@ public class RandomThingsAddon extends BTWAddon {
     }
 
     @Override
-    public void preInitialize() {
-        this.registerProperty("EnableMinecraftDateTimer", "True", "Set if the minecraft date should show up or not");
-        this.registerProperty("EnableRealWorldTimer", "True", "Set if the real time timer should show up or not");
-        this.registerProperty("TimerAlignment", "Hotbar", "Places timers on some spots.\n# Allowed case-insensitive strings: \"Hotbar\", \"TopLeft\", \"Top\", \"TopRight\", \"BottomLeft\", \"BottomRight\"");
-        this.registerProperty("ToggleSprint", "True", "Set whether the sprint/special key should have a toggle or hold behavior");
-        this.registerProperty("LanPort", "25565", "Port to always use when opening to LAN (-1 for random)");
-        this.registerProperty("AutoHealthScoreboard", "True", "Set whether a health scoreboard should be automatically created when sharing to LAN or not");
-        this.registerProperty("ZoomFov", "-1.5", "Set the FOV value that is set when zooming in");
-        this.registerProperty("UseJNativeHook", "True", "Set whether to use JNativeHook library or not (disable if mouse sensibility has acceleration issues)");
-        this.registerProperty("WarnDurabilityWaste", true, "This warns players with a sound when using more durability");
-        this.registerProperty("PrecisionMode", false, "False: Standard level precision (not suitable for speedrunning)\n# True: Highest level, shows ticks");
+    public void registerConfigProperties(AddonConfig config) {
+        config.registerBoolean("EnableMinecraftDateTimer", true, "Set if the minecraft date should show up or not");
+        config.registerBoolean("EnableRealWorldTimer", true, "Set if the real time timer should show up or not");
+        config.registerString("TimerAlignment", "Hotbar", "Places timers on some spots.\n# Allowed case-insensitive strings: \"Hotbar\", \"TopLeft\", \"Top\", \"TopRight\", \"BottomLeft\", \"BottomRight\"");
+        config.registerBoolean("ToggleSprint", true, "Set whether the sprint/special key should have a toggle or hold behavior");
+        config.registerInt("LanPort", 25565, "Port to always use when opening to LAN (-1 for random)");
+        config.registerBoolean("AutoHealthScoreboard", true, "Set whether a health scoreboard should be automatically created when sharing to LAN or not");
+        config.registerDouble("ZoomFov", -1.5, "Set the FOV value that is set when zooming in");
+        config.registerBoolean("UseJNativeHook", true, "Set whether to use JNativeHook library or not (disable if mouse sensibility has acceleration issues)");
+        config.registerBoolean("WarnDurabilityWaste", true, "This warns players with a sound when using more durability");
+        config.registerBoolean("PrecisionMode", false, "False: Standard level precision (not suitable for speedrunning)\n# True: Highest level, shows ticks");
     }
 
     @Override
-    public void handleConfigProperties(Map<String, String> propertyValues) {
-        shouldShowDateTimer = Boolean.parseBoolean(propertyValues.get("EnableMinecraftDateTimer"));
-        shouldShowRealTimer = Boolean.parseBoolean(propertyValues.get("EnableRealWorldTimer"));
-        timerAlignment = propertyValues.get("TimerAlignment").toLowerCase();
+    public void handleConfigProperties(AddonConfig config) {
+        shouldShowDateTimer = config.getBoolean("EnableMinecraftDateTimer");
+        shouldShowRealTimer = config.getBoolean("EnableRealWorldTimer");
+        timerAlignment = config.getString("TimerAlignment").toLowerCase();
         switch (timerAlignment) {
             case "topleft":
             case "topright":
@@ -76,13 +75,13 @@ public class RandomThingsAddon extends BTWAddon {
             default:
                 timerAlignment = "hotbar";
         }
-        toggleSprint = Boolean.parseBoolean(propertyValues.get("ToggleSprint"));
-        lanPort = Integer.parseInt(propertyValues.get("LanPort"));
-        autoHealthScoreboard = Boolean.parseBoolean(propertyValues.get("AutoHealthScoreboard"));
-        zoomFov = Float.parseFloat(propertyValues.get("ZoomFov"));
-        useJNativeHook = Boolean.parseBoolean(propertyValues.get("UseJNativeHook"));
-        precisionMode = Boolean.parseBoolean(propertyValues.get("PrecisionMode"));
-        warnDurabilityWaste = Boolean.parseBoolean(propertyValues.get("WarnDurabilityWaste"));
+        toggleSprint = config.getBoolean("ToggleSprint");
+        lanPort = config.getInt("LanPort");
+        autoHealthScoreboard = config.getBoolean("AutoHealthScoreboard");
+        zoomFov = (float) config.getDouble("ZoomFov");
+        useJNativeHook = config.getBoolean("UseJNativeHook");
+        precisionMode = config.getBoolean("PrecisionMode");
+        warnDurabilityWaste = config.getBoolean("WarnDurabilityWaste");
     }
 
     @Override
