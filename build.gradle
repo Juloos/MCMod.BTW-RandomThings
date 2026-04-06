@@ -39,6 +39,7 @@ loom {
 	addMinecraftJarProcessor(
 			BTWJarReplacer, "BTWJarReplacer", projectDir.toString()
 	)
+	accessWidenerPath = file("src/main/resources/randomthings.accesswidener")
 }
 
 def lwjglVersion = System.getProperty("os.name").toLowerCase().contains("mac") ? "2.9.1" : "2.9.0"
@@ -68,6 +69,9 @@ dependencies {
 	implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.12'
 
 	implementation 'com.typesafe:config:1.4.5'
+
+	implementation 'com.github.kwhat:jnativehook:2.2.2'
+	include 'com.github.kwhat:jnativehook:2.2.2'
 }
 
 configurations.all {
@@ -185,5 +189,4 @@ class BTWJarReplacer implements MinecraftJarProcessor<Spec> {
 			}
 		}
 	}
-
 }

@@ -1,9 +1,9 @@
 package net.random.things.mixin;
 
-import com.prupe.mcpatcher.Config;
+import net.minecraft.src.EntityClientPlayerMP;
 import net.minecraft.src.KeyBinding;
-import org.lwjgl.input.Keyboard;
-import org.spongepowered.asm.mixin.Final;
+import net.random.things.event.GlobalMouseListener;
+import org.lwjgl.input.Mouse;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -13,96 +13,84 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import btw.random.things.RandomThingsAddon;
-//import net.minecraft.client.Minecraft;
 import net.minecraft.src.Minecraft;
 import net.minecraft.src.GameSettings;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.Random;
-
 @Mixin(Minecraft.class)
-public class MinecraftMixin {
+public abstract class MinecraftMixin {
     @Shadow
     public GameSettings gameSettings;
 
     @Shadow
-    private static Minecraft theMinecraft;
+    public EntityClientPlayerMP thePlayer;
 
-    @Final
-    @Shadow
-    public File mcDataDir;
-
-    @Inject(method = "startGame", at = @At("HEAD"))
-    private void preStartGame(CallbackInfo cbi){
-        extractKeybinds();
-    }
-
-    @Inject(method = "startGame", at = @At("RETURN"))
-    private void postStartGame(CallbackInfo cbi){
-        RandomThingsAddon.getInstance().initKeybind();
-    }
-
-    // this feels disgusting to yank out decompiled minecraft source just to get keybinds
-    private void extractKeybinds() {
-        File optionsFile = Config.getOptionsTxt(mcDataDir, "options.txt");
-
-        try {
-            if (!optionsFile.exists()) {
-                return;
-            }
-            BufferedReader var1 = new BufferedReader(new FileReader(optionsFile));
-            String var2 = "";
-
-            while ((var2 = var1.readLine()) != null) {
-                try {
-                    String[] var3 = var2.split(":");
-                    if (var3[0].startsWith("key_key.randomthings.")) {
-                        theMinecraft.getLogAgent().logInfo("Trying option: " + var2  + " and value "+ Integer.parseInt(var3[1]));
-                        RandomThingsAddon.keybindMap.put(var3[0].substring(4), Integer.parseInt(var3[1]));
-                    }
-                } catch (Exception var51) {
-                    theMinecraft.getLogAgent().logWarning("Skipping bad option: " + var2);
-                }
-            }
-            var1.close();
-        } catch (Exception var6) {
-            theMinecraft.getLogAgent().logWarning("Failed to load options");
-            var6.printStackTrace();
-        }
-    }
-
-    //public static boolean f5Change
+    @Unique private float oldFovSetting;
+    @Unique private boolean wasZooming = false;
 
     @Redirect(method = "runTick", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;getEventKey()I", ordinal = 13))
-    private int redirectF5Call() {
-        /*if(RandomThingsAddon.f5enabled){
-            if(RandomThingsAddon.first_person_key.pressed){
-                gameSettings.thirdPersonView = 0;
-            }
-            if(RandomThingsAddon.third_person_key.pressed){
-                gameSettings.thirdPersonView = 1;
-            }
-            if(RandomThingsAddon.backwards_facing_key.pressed){
-                gameSettings.thirdPersonView = 2;
-            }
-            if (actualKeyPressed == Keyboard.KEY_F5 && !RandomThingsAddon.f5Vanillaenabled){
-                System.out.println("pressed f5?");
-                return 0;
-            }
-        }
-        return actualKeyPressed;*/
-        int actualKeyPressed = Keyboard.getEventKey();
-        if(RandomThingsAddon.first_person_key.pressed){
+    private int removeVanillaF5Call() {
+        return -1;
+    }
+
+    @Redirect(method = "runTick", at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Keyboard;getEventKey()I", ordinal = 15))
+    private int removeVanillaSlotCall() {
+        return -1;
+    }
+
+    @Inject(method = "runTick", at = @At(value = "FIELD", target = "net/minecraft/src/GameSettings.chatVisibility : I"))
+    private void handleSlotKeys(CallbackInfo ci) {
+        // Perspective keybindings
+        if (RandomThingsAddon.first_person_key.isPressed())
             gameSettings.thirdPersonView = 0;
-        }
-        if(RandomThingsAddon.third_person_key.pressed){
+        else if (RandomThingsAddon.third_person_key.isPressed())
             gameSettings.thirdPersonView = 1;
-        }
-        if(RandomThingsAddon.backwards_facing_key.pressed){
+        else if (RandomThingsAddon.backwards_facing_key.isPressed())
             gameSettings.thirdPersonView = 2;
+        else if (RandomThingsAddon.f5_key.isPressed())
+            gameSettings.thirdPersonView = (gameSettings.thirdPersonView + 1) % 3;
+
+        // Slots keybindings
+        for (int i = 0; i < RandomThingsAddon.slot_keys.length; i++)
+            if (RandomThingsAddon.slot_keys[i].isPressed())
+                this.thePlayer.inventory.currentItem = i;
+
+        // Zoom keybinding
+        if (RandomThingsAddon.zoom_key.pressed && !wasZooming) {
+            oldFovSetting = this.gameSettings.fovSetting;
+            this.gameSettings.fovSetting = RandomThingsAddon.zoomFov;
+            this.gameSettings.smoothCamera = true;
+            wasZooming = true;
         }
-        return actualKeyPressed;
+        if (!RandomThingsAddon.zoom_key.pressed && wasZooming) {
+            this.gameSettings.fovSetting = oldFovSetting;
+            this.gameSettings.smoothCamera = false;
+            wasZooming = false;
+        }
+    }
+
+    @Redirect(
+            method = "runTick",
+            at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I")
+    )
+    private int removeMouseButtonShift() {
+        if (RandomThingsAddon.useJNativeHook && Mouse.getEventButton() > 2 && GlobalMouseListener.getInstance() != null)
+            return -4269;
+        return Mouse.getEventButton();
+    }
+
+    @Inject(
+            method = "runTick",
+            at = @At(value = "FIELD", target = "Lnet/minecraft/src/Minecraft;leftClickCounter:I", ordinal = 1)
+    )
+    private void fixMouseButtonShift(CallbackInfo ci) {
+        if (!RandomThingsAddon.useJNativeHook)
+            return;
+        boolean pressed;
+        for (int i = 3; i < Mouse.getButtonCount(); i++) {
+            pressed = GlobalMouseListener.isButtonDown(i);
+            KeyBinding.setKeyBindState(i - 100, pressed);
+            if (pressed)
+                KeyBinding.onTick(i - 100);
+        }
     }
 }
